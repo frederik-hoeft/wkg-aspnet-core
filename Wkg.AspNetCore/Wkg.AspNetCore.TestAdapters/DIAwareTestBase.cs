@@ -26,6 +26,7 @@ public abstract class DIAwareTestBase<TInitializer> : TestBase where TInitialize
     /// <param name="unitTestAction">The unit test to be executed.</param>
     protected async Task UsingServiceProviderAsync(Action<IServiceProvider> unitTestAction)
     {
+        ArgumentNullException.ThrowIfNull(unitTestAction);
         IServiceScopeFactory scopeFactory = ServiceProvider.GetRequiredService<IServiceScopeFactory>();
         await using AsyncServiceScope scope = scopeFactory.CreateAsyncScope();
         unitTestAction.Invoke(scope.ServiceProvider);
@@ -37,6 +38,7 @@ public abstract class DIAwareTestBase<TInitializer> : TestBase where TInitialize
     /// <param name="unitTestTask">The unit test to be executed asynchronously.</param>
     protected async Task UsingServiceProviderAsync(Func<IServiceProvider, Task> unitTestTask)
     {
+        ArgumentNullException.ThrowIfNull(unitTestTask);
         IServiceScopeFactory scopeFactory = ServiceProvider.GetRequiredService<IServiceScopeFactory>();
         await using AsyncServiceScope scope = scopeFactory.CreateAsyncScope();
         await unitTestTask.Invoke(scope.ServiceProvider);

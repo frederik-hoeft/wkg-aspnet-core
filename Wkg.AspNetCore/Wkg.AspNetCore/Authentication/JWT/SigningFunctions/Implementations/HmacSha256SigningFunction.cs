@@ -4,7 +4,7 @@ using Wkg.Data.Pooling;
 
 namespace Wkg.AspNetCore.Authentication.Jwt.SigningFunctions.Implementations;
 
-internal class HmacSha256SigningFunction(HmacOptions options) : IJwtSigningFunction
+internal sealed class HmacSha256SigningFunction(HmacOptions options) : IJwtSigningFunction
 {
     public string Name => "HS256";
 

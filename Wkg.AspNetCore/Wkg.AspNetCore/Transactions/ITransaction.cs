@@ -110,12 +110,35 @@ public interface ITransaction<TDbContext> : IAsyncDisposable where TDbContext : 
     Task<IActionResult> RunReadOnlyAsync(ReadOnlyDatabaseRequestTask<TDbContext, IActionResult> task);
 
     /// <summary>
+    /// Executes the specified asynchronous <paramref name="task"/> in an isolated readonly database transaction with automatic error handling.
+    /// </summary>
+    /// <remarks>
+    /// As the specified action does not require write-access to the database,
+    /// the transaction may automatically be rolled back after the action has been executed,
+    /// if no other actions requiring write-access are executed within the same transaction scope.
+    /// </remarks>
+    /// <param name="task">The action to be executed in the isolated environment.</param>
+    /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
+    /// <returns>The asynchronous result of the <paramref name="task"/>.</returns>
+    /// <exception cref="ApiProxyException">if the <paramref name="task"/> throws an exception.</exception>
+    Task<IActionResult> RunReadOnlyAsync(ReadOnlyDatabaseRequestTaskWithCancellation<TDbContext, IActionResult> task, CancellationToken cancellationToken);
+
+    /// <summary>
     /// Executes the specified asynchronous <paramref name="task"/> in an isolated database transaction with automatic error handling.
     /// </summary>
     /// <param name="task">The action to be executed in the isolated environment.</param>
     /// <returns>The asynchronous result of the <paramref name="task"/>.</returns>
     /// <exception cref="ApiProxyException">if the <paramref name="task"/> throws an exception.</exception>
     Task<IActionResult> RunAsync(DatabaseRequestTask<TDbContext, IActionResult> task);
+
+    /// <summary>
+    /// Executes the specified asynchronous <paramref name="task"/> in an isolated database transaction with automatic error handling.
+    /// </summary>
+    /// <param name="task">The action to be executed in the isolated environment.</param>
+    /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
+    /// <returns>The asynchronous result of the <paramref name="task"/>.</returns>
+    /// <exception cref="ApiProxyException">if the <paramref name="task"/> throws an exception.</exception>
+    Task<IActionResult> RunAsync(DatabaseRequestTaskWithCancellation<TDbContext, IActionResult> task,  CancellationToken cancellationToken);
 
     /// <summary>
     /// Executes the specified asynchronous <paramref name="task"/> in an isolated readonly database transaction with automatic error handling.
@@ -131,12 +154,35 @@ public interface ITransaction<TDbContext> : IAsyncDisposable where TDbContext : 
     Task RunReadOnlyAsync(ReadOnlyDatabaseRequestTask<TDbContext> task);
 
     /// <summary>
+    /// Executes the specified asynchronous <paramref name="task"/> in an isolated readonly database transaction with automatic error handling.
+    /// </summary>
+    /// <remarks>
+    /// As the specified action does not require write-access to the database,
+    /// the transaction may automatically be rolled back after the action has been executed,
+    /// if no other actions requiring write-access are executed within the same transaction scope.
+    /// </remarks>
+    /// <param name="task">The action to be executed in the isolated environment.</param>
+    /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
+    /// <returns>The asynchronous result of the <paramref name="task"/>.</returns>
+    /// <exception cref="ApiProxyException">if the <paramref name="task"/> throws an exception.</exception>
+    Task RunReadOnlyAsync(ReadOnlyDatabaseRequestTaskWithCancellation<TDbContext> task, CancellationToken cancellationToken);
+
+    /// <summary>
     /// Executes the specified asynchronous <paramref name="task"/> in an isolated database transaction with automatic error handling.
     /// </summary>
     /// <param name="task">The action to be executed in the isolated environment.</param>
     /// <returns>The asynchronous result of the <paramref name="task"/>.</returns>
     /// <exception cref="ApiProxyException">if the <paramref name="task"/> throws an exception.</exception>
     Task RunAsync(DatabaseRequestTask<TDbContext> task);
+
+    /// <summary>
+    /// Executes the specified asynchronous <paramref name="task"/> in an isolated database transaction with automatic error handling.
+    /// </summary>
+    /// <param name="task">The action to be executed in the isolated environment.</param>
+    /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
+    /// <returns>The asynchronous result of the <paramref name="task"/>.</returns>
+    /// <exception cref="ApiProxyException">if the <paramref name="task"/> throws an exception.</exception>
+    Task RunAsync(DatabaseRequestTaskWithCancellation<TDbContext> task, CancellationToken cancellationToken);
 
     /// <summary>
     /// Executes the specified asynchronous <paramref name="task"/> in an isolated readonly database transaction with automatic error handling.
@@ -152,10 +198,33 @@ public interface ITransaction<TDbContext> : IAsyncDisposable where TDbContext : 
     Task<TResult> RunReadOnlyAsync<TResult>(ReadOnlyDatabaseRequestTask<TDbContext, TResult> task);
 
     /// <summary>
+    /// Executes the specified asynchronous <paramref name="task"/> in an isolated readonly database transaction with automatic error handling.
+    /// </summary>
+    /// <remarks>
+    /// As the specified action does not require write-access to the database,
+    /// the transaction may automatically be rolled back after the action has been executed,
+    /// if no other actions requiring write-access are executed within the same transaction scope.
+    /// </remarks>
+    /// <typeparam name="TResult">The result of the <paramref name="task"/></typeparam>
+    /// <param name="task">The asynchronous Task to be executed in the isolated environment.</param>
+    /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
+    /// <exception cref="ApiProxyException">if the <paramref name="task"/> throws an exception.</exception>
+    Task<TResult> RunReadOnlyAsync<TResult>(ReadOnlyDatabaseRequestTaskWithCancellation<TDbContext, TResult> task, CancellationToken cancellationToken);
+
+    /// <summary>
     /// Executes the specified asynchronous <paramref name="task"/> in an isolated database transaction with automatic error handling.
     /// </summary>
     /// <typeparam name="TResult">The result of the <paramref name="task"/>.</typeparam>
     /// <param name="task">The asynchronous Task to be executed in the isolated environment.</param>
     /// <exception cref="ApiProxyException">if the <paramref name="task"/> throws an exception.</exception>
     Task<TResult> RunAsync<TResult>(DatabaseRequestTask<TDbContext, TResult> task);
+
+    /// <summary>
+    /// Executes the specified asynchronous <paramref name="task"/> in an isolated database transaction with automatic error handling.
+    /// </summary>
+    /// <typeparam name="TResult">The result of the <paramref name="task"/>.</typeparam>
+    /// <param name="task">The asynchronous Task to be executed in the isolated environment.</param>
+    /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
+    /// <exception cref="ApiProxyException">if the <paramref name="task"/> throws an exception.</exception>
+    Task<TResult> RunAsync<TResult>(DatabaseRequestTaskWithCancellation<TDbContext, TResult> task, CancellationToken cancellationToken);
 }

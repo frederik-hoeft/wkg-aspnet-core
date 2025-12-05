@@ -20,6 +20,8 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddJwtClaims<TIdentityClaim>(this IServiceCollection services, Action<CookieClaimOptionsBuilder> configureOptions)
         where TIdentityClaim : IdentityClaim
     {
+        ArgumentNullException.ThrowIfNull(services);
+        ArgumentNullException.ThrowIfNull(configureOptions);
         CookieClaimOptionsBuilder builder = new();
         configureOptions(builder);
         CookieClaimOptions options = builder.Build(services);
@@ -44,6 +46,8 @@ public static class ServiceCollectionExtensions
         where TIdentityClaim : IdentityClaim
         where TDecryptionKeys : IDecryptionKeys<TDecryptionKeys>
     {
+        ArgumentNullException.ThrowIfNull(services);
+        ArgumentNullException.ThrowIfNull(configureOptions);
         CookieClaimOptionsBuilder builder = new();
         configureOptions(builder);
         CookieClaimOptions options = builder.Build(services);

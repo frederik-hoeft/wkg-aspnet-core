@@ -3,7 +3,7 @@ using Wkg.AspNetCore.Authentication.Jwt.Claims;
 
 namespace Wkg.AspNetCore.Authentication.Jwt.Internals;
 
-internal record ClaimRepositoryData<TIdentityClaim, TDecryptionKeys>
+internal sealed record ClaimRepositoryData<TIdentityClaim, TDecryptionKeys>
 (
     TIdentityClaim IdentityClaim,
     DateTime ExpirationDate,

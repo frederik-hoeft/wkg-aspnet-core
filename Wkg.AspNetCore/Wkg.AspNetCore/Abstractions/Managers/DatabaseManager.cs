@@ -13,7 +13,6 @@ namespace Wkg.AspNetCore.Abstractions.Managers;
 /// <param name="transactionService">The DI descriptor of the transaction service.</param>
 public abstract class DatabaseManager<TDbContext>(ITransactionServiceHandle transactionService) : ManagerBase where TDbContext : DbContext
 {
-
     /// <summary>
     /// Gets the transaction service responsible for managing the database context associated with this context.
     /// </summary>

@@ -10,15 +10,8 @@ namespace Wkg.AspNetCore.Validation;
 /// Contrary to <see cref="UrlAttribute"/>, this attribute uses <see cref="DataValidationService.IsUrl(string?)"/> to validate against the URL format,
 /// instead of simply checking whether the value starts with <c>http://</c>, <c>https://</c>, or <c>ftp://</c>.
 /// </remarks>
-public class ValidUrlAttribute : DataTypeAttribute
+public sealed class ValidUrlAttribute() : DataTypeAttribute(DataType.Url)
 {
-    /// <summary>
-    /// Initializes a new instance of the <see cref="ValidUrlAttribute"/> class.
-    /// </summary>
-    public ValidUrlAttribute() : base(DataType.Url)
-    {
-    }
-
     /// <summary>
     /// Determines whether the specified value conforms to the URL format as defined by RFC 3986.
     /// </summary>
@@ -31,7 +24,7 @@ public class ValidUrlAttribute : DataTypeAttribute
             ErrorMessage = "The {0} field is not a valid URL.";
         }
 
-        if (value == null)
+        if (value is null)
         {
             return true;
         }

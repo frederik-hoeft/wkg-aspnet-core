@@ -16,6 +16,7 @@ public static class WebApplicationBuilderExtensions
     /// <returns>The configured <see cref="WebApplication"/>.</returns>
     public static WebApplication BuildUsing<TStartupScript>(this WebApplicationBuilder builder) where TStartupScript : IStartupScript
     {
+        ArgumentNullException.ThrowIfNull(builder);
         builder.ConfigureServicesUsing<TStartupScript>();
         WebApplication app = builder.Build();
         TStartupScript.Configure(app);
@@ -28,6 +29,9 @@ public static class WebApplicationBuilderExtensions
     /// <typeparam name="TStartupScript">The type of the startup script.</typeparam>
     /// <param name="builder">The builder.</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void ConfigureServicesUsing<TStartupScript>(this WebApplicationBuilder builder) where TStartupScript : IStartupScript => 
+    public static void ConfigureServicesUsing<TStartupScript>(this WebApplicationBuilder builder) where TStartupScript : IStartupScript
+    {
+        ArgumentNullException.ThrowIfNull(builder);
         TStartupScript.ConfigureServices(builder.Services, builder.Configuration);
+    }
 }

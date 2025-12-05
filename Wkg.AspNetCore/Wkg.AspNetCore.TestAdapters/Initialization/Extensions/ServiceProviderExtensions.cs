@@ -17,12 +17,14 @@ public static class ServiceProviderExtensions
         {
             throw new InvalidOperationException($"Type {type} must have exactly one constructor.");
         }
-        object?[] dependencies = constructorInfo
+        object?[] dependencies = 
+        [
+            .. constructorInfo
             .GetParameters()
             .Select(param => param.IsOptional 
                 ? serviceProvider.GetService(param.ParameterType)
                 : serviceProvider.GetRequiredService(param.ParameterType))
-            .ToArray();
+        ];
         return constructorInfo.Invoke(dependencies).ReinterpretAs<T>();
     }
 

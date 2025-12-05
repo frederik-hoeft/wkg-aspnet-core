@@ -5,7 +5,7 @@ namespace Wkg.AspNetCore.Transactions.Configuration;
 /// <summary>
 /// Provides a fluent API for configuring the default options for <see cref="ITransactionService{TDbContext}"/> instances.
 /// </summary>
-public class TransactionServiceOptionsBuilder
+public sealed class TransactionServiceOptionsBuilder
 {
     internal IsolationLevel TransactionIsolationLevel { get; private set; } = IsolationLevel.ReadCommitted;
 

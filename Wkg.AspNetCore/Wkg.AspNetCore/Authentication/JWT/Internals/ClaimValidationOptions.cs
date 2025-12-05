@@ -1,3 +1,3 @@
 ﻿namespace Wkg.AspNetCore.Authentication.Jwt.Internals;
 
-internal record ClaimValidationOptions(TimeSpan TimeToLive) : IClaimValidationOptions;
+internal sealed record ClaimValidationOptions(TimeSpan TimeToLive) : IClaimValidationOptions;

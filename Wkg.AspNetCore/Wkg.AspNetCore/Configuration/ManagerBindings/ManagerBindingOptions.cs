@@ -2,4 +2,4 @@
 
 namespace Wkg.AspNetCore.Configuration.ManagerBindings;
 
-internal record ManagerBindingOptions(FrozenDictionary<Type, ManagerFactory> Map);
+internal sealed record ManagerBindingOptions(FrozenDictionary<Type, ManagerFactory> Map);

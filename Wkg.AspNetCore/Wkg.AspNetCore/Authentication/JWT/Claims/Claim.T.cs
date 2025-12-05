@@ -7,7 +7,7 @@ namespace Wkg.AspNetCore.Authentication.Jwt.Claims;
 /// Represents a verifiable, strongly-typed key-value pair, used to claim a subject related to an authenticated entity.
 /// </summary>
 /// <typeparam name="TValue">The type of the value.</typeparam>
-public class Claim<TValue> : Claim
+public sealed class Claim<TValue> : Claim
 {
     private TValue _value;
 

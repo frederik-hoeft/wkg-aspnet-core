@@ -10,15 +10,8 @@ namespace Wkg.AspNetCore.Validation;
 /// Contrary to <see cref="EmailAddressAttribute"/>, this attribute uses <see cref="DataValidationService.IsEmailAddress(string?)"/> to validate against the email address format, 
 /// instead of simply checking for the presence of an <c>@</c> character.
 /// </remarks>
-public class ValidEmailAddressAttribute : DataTypeAttribute
+public sealed class ValidEmailAddressAttribute() : DataTypeAttribute(DataType.EmailAddress)
 {
-    /// <summary>
-    /// Initializes a new instance of the <see cref="ValidEmailAddressAttribute"/> class.
-    /// </summary>
-    public ValidEmailAddressAttribute() : base(DataType.EmailAddress)
-    {
-    }
-
     /// <summary>
     /// Determines whether the specified value conforms to the email address format specified in RFC 5322.
     /// </summary>
@@ -31,7 +24,7 @@ public class ValidEmailAddressAttribute : DataTypeAttribute
             ErrorMessage = "The {0} field is not a valid e-mail address.";
         }
 
-        if (value == null)
+        if (value is null)
         {
             return true;
         }

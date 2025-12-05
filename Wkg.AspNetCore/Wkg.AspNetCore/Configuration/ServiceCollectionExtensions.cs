@@ -22,8 +22,7 @@ public static class ServiceCollectionExtensions
     /// <returns>The <see cref="IServiceCollection"/> for fluent configuration.</returns>
     public static IServiceCollection ConfigureUsing<TStartupScript>(this IServiceCollection services, IConfiguration? configuration = null) where TStartupScript : IStartupScript
     {
-        string env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")
-            ?? "Development";
+        string env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Development";
 
         configuration ??= new ConfigurationBuilder()
             .SetBasePath(AppContext.BaseDirectory)

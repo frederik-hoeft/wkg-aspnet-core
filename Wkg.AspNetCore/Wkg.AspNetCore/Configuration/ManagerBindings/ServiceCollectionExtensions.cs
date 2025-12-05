@@ -12,6 +12,7 @@ namespace Wkg.AspNetCore.Configuration.ManagerBindings;
 /// <summary>
 /// Extension methods for <see cref="IServiceCollection"/>.
 /// </summary>
+// TODO: this could use some Roslyn source generation to avoid reflection at startup
 public static class ServiceCollectionExtensions
 {
     /// <summary>
@@ -22,11 +23,13 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddManagers(this IServiceCollection services)
     {
         // collect all manager types used by concrete MvcContext types (controllers, razor pages, etc.)
-        IEnumerable<Type> managers = AppDomain.CurrentDomain
+        List<Type> managers = 
+        [
+            .. AppDomain.CurrentDomain
             // get all assemblies
             .GetAssemblies()
             // filter out system and microsoft assemblies
-            .Where(asm => asm.FullName is string name && !name.StartsWith(nameof(System)) && !name.StartsWith(nameof(Microsoft)))
+            .Where(asm => asm.FullName is string name && !name.StartsWith(nameof(System), StringComparison.Ordinal) && !name.StartsWith(nameof(Microsoft), StringComparison.Ordinal))
             // get all exported (public) types
             .SelectMany(assembly => assembly.GetExportedTypes()
                 // only keep concrete MvcContext types
@@ -40,7 +43,8 @@ public static class ServiceCollectionExtensions
                 .Select(t => t.GetGenericTypeArgumentOfSingleInterface(typeof(IMvcContext<>))!))
             // important: multiple MvcContext types may use the backing manager implementation
             // for example a RazorPage and a Controller may both use the same implementation
-            .Distinct();
+            .Distinct()
+        ];
 
         // create a frozen dictionary of manager types and their DI-aware factories
         FrozenDictionary<Type, ManagerFactory> factories = managers

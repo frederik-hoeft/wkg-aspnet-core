@@ -45,31 +45,67 @@ internal partial class Transaction<TDbContext>
         RunReadOnlyAsync<IActionResult>(task);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public Task<IActionResult> RunAsync(DatabaseRequestTask<TDbContext, IActionResult> task) =>
+    public Task<IActionResult> RunReadOnlyAsync(ReadOnlyDatabaseRequestTaskWithCancellation<TDbContext, IActionResult> task, CancellationToken cancellationToken) =>
+        RunReadOnlyAsync<IActionResult>(task, cancellationToken);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public Task<IActionResult> RunAsync(DatabaseRequestTask<TDbContext, IActionResult> task) => 
         RunAsync<IActionResult>(task);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public Task RunReadOnlyAsync(ReadOnlyDatabaseRequestTask<TDbContext> task) => RunAsync(async (dbContext, transaction) =>
+    public Task<IActionResult> RunAsync(DatabaseRequestTaskWithCancellation<TDbContext, IActionResult> task, CancellationToken cancellationToken) =>
+        RunAsync<IActionResult>(task, cancellationToken);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public Task RunReadOnlyAsync(ReadOnlyDatabaseRequestTask<TDbContext> task) => RunInScopeAsync<VoidResult>(async (dbContext, transaction, _) =>
     {
         await task.Invoke(dbContext);
         return new DeferredTransactionState<VoidResult>(TransactionState.ReadOnly, default);
-    });
+    }, CancellationToken.None);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public Task RunAsync(DatabaseRequestTask<TDbContext> task) => RunAsync<VoidResult>(async (dbContext, transaction) =>
+    public Task RunReadOnlyAsync(ReadOnlyDatabaseRequestTaskWithCancellation<TDbContext> task, CancellationToken cancellationToken) => RunInScopeAsync<VoidResult>(async (dbContext, transaction, ct) =>
+    {
+        await task.Invoke(dbContext, ct);
+        return new DeferredTransactionState<VoidResult>(TransactionState.ReadOnly, default);
+    }, cancellationToken);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public Task RunAsync(DatabaseRequestTask<TDbContext> task) => RunInScopeAsync<VoidResult>(async (dbContext, transaction, _) =>
     {
         IDeferredTransactionState continuation = await task.Invoke(dbContext, transaction);
         return new DeferredTransactionState<VoidResult>(continuation.NextState, default);
-    });
+    }, CancellationToken.None);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public Task<TResult> RunReadOnlyAsync<TResult>(ReadOnlyDatabaseRequestTask<TDbContext, TResult> task) => RunAsync<TResult>(async (dbContext, transaction) =>
+    public Task RunAsync(DatabaseRequestTaskWithCancellation<TDbContext> task, CancellationToken cancellationToken) => RunInScopeAsync<VoidResult>(async (dbContext, transaction, ct) =>
+    {
+        IDeferredTransactionState continuation = await task.Invoke(dbContext, transaction, ct);
+        return new DeferredTransactionState<VoidResult>(continuation.NextState, default);
+    }, cancellationToken);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public Task<TResult> RunReadOnlyAsync<TResult>(ReadOnlyDatabaseRequestTask<TDbContext, TResult> task) => RunInScopeAsync<TResult>(async (dbContext, transaction, _) =>
     {
         TResult result = await task.Invoke(dbContext);
         return new DeferredTransactionState<TResult>(TransactionState.ReadOnly, result);
-    });
+    }, CancellationToken.None);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public Task<TResult> RunAsync<TResult>(DatabaseRequestTask<TDbContext, TResult> task) =>
-        RunInScopeAsync(task);
+    public Task<TResult> RunReadOnlyAsync<TResult>(ReadOnlyDatabaseRequestTaskWithCancellation<TDbContext, TResult> task, CancellationToken cancellationToken) => RunInScopeAsync<TResult>(async (dbContext, transaction, ct) =>
+    {
+        TResult result = await task.Invoke(dbContext, ct);
+        return new DeferredTransactionState<TResult>(TransactionState.ReadOnly, result);
+    }, cancellationToken);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public Task<TResult> RunAsync<TResult>(DatabaseRequestTask<TDbContext, TResult> task) => RunInScopeAsync<TResult>(async (dbContext, transaction, _) =>
+    {
+        IDeferredTransactionState<TResult> continuation = await task.Invoke(dbContext, transaction);
+        return new DeferredTransactionState<TResult>(continuation.NextState, continuation.Result);
+    }, CancellationToken.None);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public Task<TResult> RunAsync<TResult>(DatabaseRequestTaskWithCancellation<TDbContext, TResult> task, CancellationToken cancellationToken) =>
+        RunInScopeAsync(task, cancellationToken);
 }

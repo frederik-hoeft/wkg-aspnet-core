@@ -4,7 +4,7 @@ using Wkg.Logging;
 
 namespace Wkg.AspNetCore.Authentication.Jwt.Internals;
 
-internal record SessionKeyStore<TDecryptionKeys>(TimeSpan TimeToLive) where TDecryptionKeys : IDecryptionKeys<TDecryptionKeys>
+internal sealed record SessionKeyStore<TDecryptionKeys>(TimeSpan TimeToLive) where TDecryptionKeys : IDecryptionKeys<TDecryptionKeys>
 {
     private long _lastHousekeeping = DateTime.UtcNow.Ticks;
 

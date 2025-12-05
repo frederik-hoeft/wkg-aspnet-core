@@ -2,4 +2,4 @@
 
 namespace Wkg.AspNetCore.Authentication.Jwt;
 
-internal record JwtHeader([property: JsonPropertyName("alg")] string Algorithm, [property: JsonPropertyName("typ")] string Type = "JWT");
+internal sealed record JwtHeader([property: JsonPropertyName("alg")] string Algorithm, [property: JsonPropertyName("typ")] string Type = "JWT");

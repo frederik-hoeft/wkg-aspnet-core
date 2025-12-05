@@ -2,4 +2,4 @@
 
 namespace Wkg.AspNetCore.Authentication.Jwt.Implementations.CookieBased;
 
-internal record CookieClaimOptions(bool SecureOnly, ClaimValidationOptions ValidationOptions);
+internal sealed record CookieClaimOptions(bool SecureOnly, ClaimValidationOptions ValidationOptions);

@@ -9,7 +9,7 @@ using Wkg.Logging;
 
 namespace Wkg.AspNetCore.Authentication.Jwt.Implementations.CookieBased;
 
-internal class CookieClaimRepository<TIdentityClaim, TDecryptionKeys> : IClaimRepository<TIdentityClaim, TDecryptionKeys>
+internal sealed class CookieClaimRepository<TIdentityClaim, TDecryptionKeys> : IClaimRepository<TIdentityClaim, TDecryptionKeys>
     where TIdentityClaim : IdentityClaim
     where TDecryptionKeys : IDecryptionKeys<TDecryptionKeys>
 {
@@ -20,7 +20,6 @@ internal class CookieClaimRepository<TIdentityClaim, TDecryptionKeys> : IClaimRe
     private readonly CookieClaimOptions _cookieOptions;
 
     private bool _disposedValue;
-    private DateTime _expirationDate;
 
     [ActivatorUtilitiesConstructor]
     public CookieClaimRepository(IHttpContextAccessor contextAccessor, IClaimManager<TIdentityClaim, TDecryptionKeys> claimManager, CookieClaimOptions cookieOptions)
@@ -78,10 +77,10 @@ internal class CookieClaimRepository<TIdentityClaim, TDecryptionKeys> : IClaimRe
 
     public DateTime ExpirationDate
     {
-        get => _expirationDate;
+        get;
         set
         {
-            _expirationDate = value;
+            field = value;
             HasChanges = true;
         }
     }
@@ -235,18 +234,12 @@ internal class CookieClaimRepository<TIdentityClaim, TDecryptionKeys> : IClaimRe
         return false;
     }
 
-    protected virtual void Dispose(bool disposing)
+    public void Dispose()
     {
         if (!_disposedValue)
         {
             _disposedValue = true;
         }
-    }
-
-    public void Dispose()
-    {
-        // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-        Dispose(disposing: true);
         GC.SuppressFinalize(this);
     }
 

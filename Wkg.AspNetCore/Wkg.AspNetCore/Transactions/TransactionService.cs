@@ -4,7 +4,7 @@ using System.Data;
 
 namespace Wkg.AspNetCore.Transactions;
 
-internal class TransactionService<TDbContext>(ITransaction<TDbContext> defaultScope, TransactionServiceOptions options, IServiceProvider serviceProvider) : ITransactionService<TDbContext>
+internal sealed class TransactionService<TDbContext>(ITransaction<TDbContext> defaultScope, TransactionServiceOptions options, IServiceProvider serviceProvider) : ITransactionService<TDbContext>
     where TDbContext : DbContext
 {
     public ITransaction<TDbContext> Scoped => defaultScope;

@@ -4,7 +4,7 @@ using Wkg.AspNetCore.ErrorHandling;
 
 namespace Wkg.AspNetCore.Configuration.ManagerBindings;
 
-internal class DefaultManagerBindings(ManagerBindingOptions _options, IServiceProvider _scopedServiceProvider, IErrorSentry errorSentry) : IManagerBindings
+internal sealed class DefaultManagerBindings(ManagerBindingOptions _options, IServiceProvider _scopedServiceProvider, IErrorSentry errorSentry) : IManagerBindings
 {
     private Dictionary<Type, ManagerBase>? _scopedManagerCache;
 
