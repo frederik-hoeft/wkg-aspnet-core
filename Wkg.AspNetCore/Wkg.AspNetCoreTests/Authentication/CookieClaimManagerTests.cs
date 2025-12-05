@@ -102,4 +102,4 @@ public sealed class CookieClaimManagerTests
     }
 }
 
-internal class TestIdentityClaim(string rawValue) : IdentityClaim(rawValue);
+internal sealed class TestIdentityClaim(string rawValue) : IdentityClaim(rawValue);

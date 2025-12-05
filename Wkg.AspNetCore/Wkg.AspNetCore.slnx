@@ -1,0 +1,9 @@
+﻿<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path=".editorconfig" />
+    <File Path="Directory.Build.props" />
+  </Folder>
+  <Project Path="Wkg.AspNetCore/Wkg.AspNetCore.csproj" />
+  <Project Path="Wkg.AspNetCore.TestAdapters/Wkg.AspNetCore.TestAdapters.csproj" />
+  <Project Path="Wkg.AspNetCoreTests/Wkg.AspNetCoreTests.csproj" />
+</Solution>

@@ -1,4 +1,5 @@
-﻿using Wkg.AspNetCore.Abstractions;
+﻿using System.Runtime.CompilerServices;
+using Wkg.AspNetCore.Abstractions;
 using Wkg.AspNetCore.Abstractions.Managers;
 using Wkg.AspNetCore.ErrorHandling;
 
@@ -15,7 +16,7 @@ internal sealed class DefaultManagerBindings(ManagerBindingOptions _options, ISe
         _scopedManagerCache ??= [];
         if (_scopedManagerCache.TryGetValue(typeof(TManager), out ManagerBase? cachedManager))
         {
-            return cachedManager.ReinterpretAs<TManager>();
+            return Unsafe.As<TManager>(cachedManager);
         }
         TManager manager = ActivateManagerCore<TManager>(context);
         _scopedManagerCache.Add(typeof(TManager), manager);
@@ -29,7 +30,7 @@ internal sealed class DefaultManagerBindings(ManagerBindingOptions _options, ISe
             // the manager exists. We know we are running in a scoped context, so we can safely create the manager
             object managerObject = factory.Invoke(_scopedServiceProvider);
             // reinterpret_cast because we know the type is correct by convention (the map is built from the same types)
-            TManager manager = managerObject.ReinterpretAs<TManager>();
+            TManager manager = Unsafe.As<TManager>(managerObject);
             manager.Bindings = this;
             manager.Context = context;
             return manager;

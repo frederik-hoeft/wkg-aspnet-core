@@ -5,7 +5,7 @@ using Wkg.AspNetCore.Transactions;
 
 namespace Wkg.AspNetCore.TestAdapters.Initialization;
 
-internal class MockedTransaction<TDbContext>(TDbContext dbContext, IErrorSentry errorSentry, TransactionServiceOptions options)
+internal sealed class MockedTransaction<TDbContext>(TDbContext dbContext, IErrorSentry errorSentry, TransactionServiceOptions options)
     : Transaction<TDbContext>(dbContext, errorSentry, options) where TDbContext : DbContext
 {
     // prevent the transaction from being committed
