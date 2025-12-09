@@ -16,7 +16,7 @@
         <PackageId>Wkg.AspNetCore.TestAdapters</PackageId>
         <Title>WKG ASP.NET Core Test Adapters</Title>
         <IsPackable>true</IsPackable>
-        <PackageLicenseExpression>GPL-3.0-or-later</PackageLicenseExpression>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <RepositoryUrl>https://github.com/WKG-Software-GmbH/wkg-aspnet-core</RepositoryUrl>
         <PackageProjectUrl>https://github.com/WKG-Software-GmbH/wkg-aspnet-core</PackageProjectUrl>
         <Description>Provides unit test adapters for projects using WKG ASP.NET Core.</Description>
