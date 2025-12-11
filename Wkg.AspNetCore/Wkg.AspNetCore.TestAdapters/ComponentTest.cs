@@ -17,7 +17,7 @@ public abstract class ComponentTest<TComponent, TInitializer> : DIAwareTestBase<
     /// </summary>
     /// <param name="unitTestAction">The unit test action to be executed.</param>
     /// <returns>A task that represents the asynchronous operation.</returns>
-    protected Task UsingComponentAsync(Action<TComponent> unitTestAction) => UsingServiceProviderAsync(serviceProvider =>
+    protected static Task UsingComponentAsync(Action<TComponent> unitTestAction) => UsingServiceProviderAsync(serviceProvider =>
     {
         TComponent component = serviceProvider.Activate<TComponent>();
         unitTestAction.Invoke(component);
@@ -41,7 +41,7 @@ public abstract class ComponentTest<TComponent, TInitializer> : DIAwareTestBase<
     /// <param name="unitTestTask">The unit test task to be executed asynchronously.</param>
     /// <param name="cancellationToken">The cancellation token to observe.</param>
     /// <returns>A task that represents the asynchronous operation.</returns>
-    protected Task UsingComponentAsync(Func<TComponent, CancellationToken, Task> unitTestTask, CancellationToken cancellationToken = default) => UsingServiceProviderAsync(async (serviceProvider, ct) =>
+    protected static Task UsingComponentAsync(Func<TComponent, CancellationToken, Task> unitTestTask, CancellationToken cancellationToken = default) => UsingServiceProviderAsync(async (serviceProvider, ct) =>
     {
         TComponent component = serviceProvider.Activate<TComponent>();
         await unitTestTask.Invoke(component, ct);
@@ -53,7 +53,7 @@ public abstract class ComponentTest<TComponent, TInitializer> : DIAwareTestBase<
     /// <param name="unitTestTask">The unit test task to be executed asynchronously.</param>
     /// <param name="cancellationToken">The cancellation token to observe.</param>
     /// <returns>A task that represents the asynchronous operation.</returns>
-    protected Task UsingComponentAsync(Func<TComponent, IServiceProvider, CancellationToken, Task> unitTestTask, CancellationToken cancellationToken = default) => UsingServiceProviderAsync(async (serviceProvider, ct) =>
+    protected static Task UsingComponentAsync(Func<TComponent, IServiceProvider, CancellationToken, Task> unitTestTask, CancellationToken cancellationToken = default) => UsingServiceProviderAsync(async (serviceProvider, ct) =>
     {
         TComponent component = serviceProvider.Activate<TComponent>();
         await unitTestTask.Invoke(component, serviceProvider, ct);

@@ -40,7 +40,7 @@ public abstract class DIAwareTestBase<TInitializer> : TestBase where TInitialize
     /// <param name="unitTestAction">The unit test to be executed.</param>
     /// <param name="cancellationToken">The cancellation token to observe.</param>
     /// <returns>A task representing the asynchronous operation.</returns>
-    protected async Task UsingServiceProviderAsync(Action<IServiceProvider> unitTestAction, CancellationToken cancellationToken = default)
+    protected static async Task UsingServiceProviderAsync(Action<IServiceProvider> unitTestAction, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(unitTestAction);
         ServiceProvider serviceProvider = await GetServiceProviderAsync(cancellationToken).ConfigureAwait(false);
@@ -70,7 +70,7 @@ public abstract class DIAwareTestBase<TInitializer> : TestBase where TInitialize
     /// <param name="unitTestTask">The unit test to be executed asynchronously.</param>
     /// <param name="cancellationToken">The cancellation token to observe.</param>
     /// <returns>A task representing the asynchronous operation.</returns>
-    protected async Task UsingServiceProviderAsync(Func<IServiceProvider, CancellationToken, Task> unitTestTask, CancellationToken cancellationToken = default)
+    protected static async Task UsingServiceProviderAsync(Func<IServiceProvider, CancellationToken, Task> unitTestTask, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(unitTestTask);
         ServiceProvider serviceProvider = await GetServiceProviderAsync(cancellationToken).ConfigureAwait(false);

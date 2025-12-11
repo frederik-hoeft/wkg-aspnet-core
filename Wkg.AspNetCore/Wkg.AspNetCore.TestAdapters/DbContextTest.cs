@@ -23,7 +23,7 @@ public abstract class DbContextTest<TDbContext, TInitializer> : DIAwareTestBase<
     /// Any changes made to the database context will be rolled back after the unit test has been executed.
     /// </remarks>
     /// <returns>A task that represents the asynchronous operation.</returns>
-    protected Task UsingDbContextAsync(Action<TDbContext> unitTestAction, CancellationToken cancellationToken = default) => UsingServiceProviderAsync(async (serviceProvider, ct) =>
+    protected static Task UsingDbContextAsync(Action<TDbContext> unitTestAction, CancellationToken cancellationToken = default) => UsingServiceProviderAsync(async (serviceProvider, ct) =>
     {
         ArgumentNullException.ThrowIfNull(unitTestAction);
         TDbContext dbContext = serviceProvider.GetRequiredService<TDbContext>();
@@ -70,7 +70,7 @@ public abstract class DbContextTest<TDbContext, TInitializer> : DIAwareTestBase<
     /// Any changes made to the database context will be rolled back after the unit test has been executed.
     /// </remarks>
     /// <returns>A task that represents the asynchronous operation.</returns>
-    protected Task UsingDbContextAsync(Func<TDbContext, CancellationToken, Task> unitTestTask, CancellationToken cancellationToken = default) => UsingServiceProviderAsync(async (serviceProvider, ct) =>
+    protected static Task UsingDbContextAsync(Func<TDbContext, CancellationToken, Task> unitTestTask, CancellationToken cancellationToken = default) => UsingServiceProviderAsync(async (serviceProvider, ct) =>
     {
         TDbContext dbContext = serviceProvider.GetRequiredService<TDbContext>();
         await using IDbContextTransaction transaction = await dbContext.Database.BeginTransactionAsync(ct);
@@ -93,7 +93,7 @@ public abstract class DbContextTest<TDbContext, TInitializer> : DIAwareTestBase<
     /// Any changes made to the database context will be rolled back after the unit test has been executed.
     /// </remarks>
     /// <returns>A task that represents the asynchronous operation.</returns>
-    protected Task UsingDbContextAsync(Func<TDbContext, IServiceProvider, CancellationToken, Task> unitTestTask, CancellationToken cancellationToken = default) => UsingServiceProviderAsync(async (serviceProvider, ct) =>
+    protected static Task UsingDbContextAsync(Func<TDbContext, IServiceProvider, CancellationToken, Task> unitTestTask, CancellationToken cancellationToken = default) => UsingServiceProviderAsync(async (serviceProvider, ct) =>
     {
         TDbContext dbContext = serviceProvider.GetRequiredService<TDbContext>();
         await using IDbContextTransaction transaction = await dbContext.Database.BeginTransactionAsync(ct);
