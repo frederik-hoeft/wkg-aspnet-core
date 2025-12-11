@@ -51,8 +51,8 @@ public static class ServiceCollectionExtensions
         /// reads from "appsettings.[my_asp_environment].json", should the file exist.
         /// </param>
         /// <param name="cancellationToken">The cancellation token to observe.</param>
-        /// <returns>A task that represents the asynchronous operation.</returns>
-        public async ValueTask<IServiceCollection> ConfigureUsingAsync<TAsyncStartupScript>(IConfiguration? configuration = null, CancellationToken cancellationToken = default) where TAsyncStartupScript : IAsyncStartupScript
+        /// <returns>A task that represents the asynchronous operation. The task result contains the <see cref="IConfiguration"/> that was used.</returns>
+        public async ValueTask<IConfiguration> ConfigureUsingAsync<TAsyncStartupScript>(IConfiguration? configuration = null, CancellationToken cancellationToken = default) where TAsyncStartupScript : IAsyncStartupScript
         {
             string env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Development";
             configuration ??= new ConfigurationBuilder()
@@ -62,7 +62,7 @@ public static class ServiceCollectionExtensions
                 .AddEnvironmentVariables()
                 .Build();
             await TAsyncStartupScript.ConfigureServicesAsync(services, configuration, cancellationToken).ConfigureAwait(false);
-            return services;
+            return configuration;
         }
     }
 }
