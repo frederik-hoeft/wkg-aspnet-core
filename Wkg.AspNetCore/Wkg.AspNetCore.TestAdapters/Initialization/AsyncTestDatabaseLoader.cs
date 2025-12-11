@@ -30,7 +30,7 @@ public abstract class AsyncTestDatabaseLoader<TSelf, TDbContext> : IAsyncTestDat
         TSelf databaseLoader = new();
         await using TDbContext dbContext = serviceProvider.GetRequiredService<TDbContext>();
         await using IDbContextTransaction transaction = await dbContext.Database.BeginTransactionAsync(cancellationToken);
-        await databaseLoader.InitializeDatabaseAsync(dbContext, cancellationToken);
+        await databaseLoader.InitializeDatabaseAsync(dbContext, serviceProvider, cancellationToken);
         await transaction.CommitAsync(cancellationToken);
     }
 }

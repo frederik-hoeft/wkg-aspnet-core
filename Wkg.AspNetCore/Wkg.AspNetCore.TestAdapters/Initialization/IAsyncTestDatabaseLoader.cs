@@ -19,7 +19,8 @@ public interface IAsyncTestDatabaseLoader<in TDbContext> : IAsyncTestDatabaseLoa
     /// Asynchronously initializes the database by inserting the data that is required for the tests.
     /// </summary>
     /// <param name="dbContext">The database context to be used to interact with the database.</param>
+    /// <param name="serviceProvider">The service provider to be used to resolve additional services.</param>
     /// <param name="cancellationToken">The cancellation token to observe.</param>
     /// <returns>A task that represents the asynchronous operation.</returns>
-    ValueTask InitializeDatabaseAsync(TDbContext dbContext, CancellationToken cancellationToken);
+    ValueTask InitializeDatabaseAsync(TDbContext dbContext, IServiceProvider serviceProvider, CancellationToken cancellationToken);
 }
