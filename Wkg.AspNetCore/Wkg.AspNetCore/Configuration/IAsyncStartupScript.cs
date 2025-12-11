@@ -17,7 +17,7 @@ public interface IAsyncStartupScript
     /// <param name="app">The <see cref="WebApplication"/> to configure.</param>
     /// <param name="cancellationToken">The cancellation token to observe.</param>
     /// <returns>A <see cref="ValueTask"/> representing the asynchronous operation.</returns>
-    static abstract ValueTask ConfigureAsync(WebApplication app, CancellationToken cancellationToken = default);
+    static abstract ValueTask ConfigureAsync(WebApplication app, CancellationToken cancellationToken);
 
     /// <summary>
     /// Asynchronously configures the specified <paramref name="services"/> for dependency injection.
@@ -26,5 +26,5 @@ public interface IAsyncStartupScript
     /// <param name="configuration">The <see cref="IConfiguration"/>.</param>
     /// <param name="cancellationToken">The cancellation token to observe.</param>
     /// <returns>A <see cref="ValueTask"/> representing the asynchronous operation.</returns>
-    static abstract ValueTask ConfigureServicesAsync(IServiceCollection services, IConfiguration configuration, CancellationToken cancellationToken = default);
+    static abstract ValueTask ConfigureServicesAsync(IServiceCollection services, IConfiguration configuration, CancellationToken cancellationToken);
 }

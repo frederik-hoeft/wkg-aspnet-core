@@ -44,25 +44,27 @@ public static class WebApplicationBuilderExtensions
         /// Asynchronously configures the <see cref="WebApplicationBuilder.Services"/> of the provided <see cref="WebApplicationBuilder"/> using the specified <typeparamref name="TAsyncStartupScript"/>.
         /// </summary>
         /// <typeparam name="TAsyncStartupScript">The type of the async startup script.</typeparam>
+        /// <param name="cancellationToken">The cancellation token to observe.</param>
         /// <returns>A task that represents the asynchronous operation.</returns>
-        public async ValueTask ConfigureServicesUsingAsync<TAsyncStartupScript>() where TAsyncStartupScript : IAsyncStartupScript
+        public async ValueTask ConfigureServicesUsingAsync<TAsyncStartupScript>(CancellationToken cancellationToken = default) where TAsyncStartupScript : IAsyncStartupScript
         {
             ArgumentNullException.ThrowIfNull(builder);
-            await TAsyncStartupScript.ConfigureServicesAsync(builder.Services, builder.Configuration).ConfigureAwait(false);
+            await TAsyncStartupScript.ConfigureServicesAsync(builder.Services, builder.Configuration, cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
         /// Asynchronously configures the provided <see cref="WebApplicationBuilder"/> and the resulting <see cref="WebApplication"/> using the specified <typeparamref name="TAsyncStartupScript"/>.
         /// </summary>
         /// <typeparam name="TAsyncStartupScript">The type of the async startup script.</typeparam>
+        /// <param name="cancellationToken">The cancellation token to observe.</param>
         /// <returns>A task that represents the asynchronous operation. The task result contains the configured <see cref="WebApplication"/>.</returns>
 
-        public async ValueTask<WebApplication> BuildUsingAsync<TAsyncStartupScript>() where TAsyncStartupScript : IAsyncStartupScript
+        public async ValueTask<WebApplication> BuildUsingAsync<TAsyncStartupScript>(CancellationToken cancellationToken = default) where TAsyncStartupScript : IAsyncStartupScript
         {
             ArgumentNullException.ThrowIfNull(builder);
-            await builder.ConfigureServicesUsingAsync<TAsyncStartupScript>().ConfigureAwait(false);
+            await builder.ConfigureServicesUsingAsync<TAsyncStartupScript>(cancellationToken).ConfigureAwait(false);
             WebApplication app = builder.Build();
-            await TAsyncStartupScript.ConfigureAsync(app).ConfigureAwait(false);
+            await TAsyncStartupScript.ConfigureAsync(app, cancellationToken).ConfigureAwait(false);
             return app;
         }
     }
