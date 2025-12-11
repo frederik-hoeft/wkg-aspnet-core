@@ -50,8 +50,9 @@ public static class ServiceCollectionExtensions
         /// the "appsettings.json" file to exist. Additionally, the configuration also
         /// reads from "appsettings.[my_asp_environment].json", should the file exist.
         /// </param>
+        /// <param name="cancellationToken">The cancellation token to observe.</param>
         /// <returns>A task that represents the asynchronous operation.</returns>
-        public async ValueTask<IServiceCollection> ConfigureUsingAsync<TAsyncStartupScript>(IConfiguration? configuration = null) where TAsyncStartupScript : IAsyncStartupScript
+        public async ValueTask<IServiceCollection> ConfigureUsingAsync<TAsyncStartupScript>(IConfiguration? configuration = null, CancellationToken cancellationToken = default) where TAsyncStartupScript : IAsyncStartupScript
         {
             string env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Development";
             configuration ??= new ConfigurationBuilder()
@@ -60,7 +61,7 @@ public static class ServiceCollectionExtensions
                 .AddJsonFile($"appsettings.{env}.json", optional: true)
                 .AddEnvironmentVariables()
                 .Build();
-            await TAsyncStartupScript.ConfigureServicesAsync(services, configuration).ConfigureAwait(false);
+            await TAsyncStartupScript.ConfigureServicesAsync(services, configuration, cancellationToken).ConfigureAwait(false);
             return services;
         }
     }
