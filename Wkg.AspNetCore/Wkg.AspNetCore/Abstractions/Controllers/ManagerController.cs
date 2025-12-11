@@ -21,7 +21,7 @@ public abstract class ManagerController<TManager> : WkgControllerBase, IMvcConte
     /// Initializes a new instance of the <see cref="ManagerController{TManager}"/> class.
     /// </summary>
     /// <param name="managerBindings">The manager bindings.</param>
-    protected ManagerController(IManagerBindings managerBindings) : base(managerBindings.ErrorSentry)
+    protected ManagerController(IManagerBindings managerBindings) : base(managerBindings?.ErrorSentry!)
     {
         Manager = managerBindings.ActivateManager<TManager>(this);
         _managerBindings = managerBindings;

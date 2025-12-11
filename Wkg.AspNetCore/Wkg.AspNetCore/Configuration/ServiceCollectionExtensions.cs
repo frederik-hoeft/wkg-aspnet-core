@@ -8,30 +8,60 @@ namespace Wkg.AspNetCore.Configuration;
 /// </summary>
 public static class ServiceCollectionExtensions
 {
-    /// <summary>
-    /// Configures the <see cref="IServiceCollection"/> using the specified <typeparamref name="TStartupScript"/>.
-    /// </summary>
-    /// <typeparam name="TStartupScript">The type of the startup script.</typeparam>
-    /// <param name="services">The <see cref="IServiceCollection"/>.</param>
-    /// <param name="configuration">
-    /// The <see cref="IConfiguration"/>. 
-    /// If no configuration is specified, creates a new configuration that expects
-    /// the "appsettings.json" file to exist. Additionally, the configuration also
-    /// reads from "appsettings.[my_asp_environment].json", should the file exist.
-    /// </param>
-    /// <returns>The <see cref="IServiceCollection"/> for fluent configuration.</returns>
-    public static IServiceCollection ConfigureUsing<TStartupScript>(this IServiceCollection services, IConfiguration? configuration = null) where TStartupScript : IStartupScript
+#pragma warning disable CA1034 // Nested types should not be visible
+    // TODO: IntelliSense doesn't yet recognize C# 14 extension syntax
+    extension(IServiceCollection services)
+#pragma warning restore CA1034 // Nested types should not be visible
     {
-        string env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Development";
+        /// <summary>
+        /// Configures the <see cref="IServiceCollection"/> using the specified <typeparamref name="TStartupScript"/>.
+        /// </summary>
+        /// <typeparam name="TStartupScript">The type of the startup script.</typeparam>
+        /// <param name="configuration">
+        /// The <see cref="IConfiguration"/>. 
+        /// If no configuration is specified, creates a new configuration that expects
+        /// the "appsettings.json" file to exist. Additionally, the configuration also
+        /// reads from "appsettings.[my_asp_environment].json", should the file exist.
+        /// </param>
+        /// <returns>The <see cref="IServiceCollection"/> for fluent configuration.</returns>
+        [Obsolete(DeprecationNotice.SYNCHRONOUS_STARTUP_SCRIPT_INTERFACE)]
+        public IServiceCollection ConfigureUsing<TStartupScript>(IConfiguration? configuration = null) where TStartupScript : IStartupScript
+        {
+            string env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Development";
 
-        configuration ??= new ConfigurationBuilder()
-            .SetBasePath(AppContext.BaseDirectory)
-            .AddJsonFile("appsettings.json", optional: false)
-            .AddJsonFile($"appsettings.{env}.json", optional: true)
-            .AddEnvironmentVariables()
-            .Build();
+            configuration ??= new ConfigurationBuilder()
+                .SetBasePath(AppContext.BaseDirectory)
+                .AddJsonFile("appsettings.json", optional: false)
+                .AddJsonFile($"appsettings.{env}.json", optional: true)
+                .AddEnvironmentVariables()
+                .Build();
 
-        TStartupScript.ConfigureServices(services, configuration);
-        return services;
+            TStartupScript.ConfigureServices(services, configuration);
+            return services;
+        }
+
+        /// <summary>
+        /// Asynchronously configures the <see cref="IServiceCollection"/> using the specified <typeparamref name="TAsyncStartupScript"/>.
+        /// </summary>
+        /// <typeparam name="TAsyncStartupScript">The type of the async startup script.</typeparam>
+        /// <param name="configuration">
+        /// The <see cref="IConfiguration"/>.
+        /// If no configuration is specified, creates a new configuration that expects
+        /// the "appsettings.json" file to exist. Additionally, the configuration also
+        /// reads from "appsettings.[my_asp_environment].json", should the file exist.
+        /// </param>
+        /// <returns>A task that represents the asynchronous operation.</returns>
+        public async ValueTask<IServiceCollection> ConfigureUsingAsync<TAsyncStartupScript>(IConfiguration? configuration = null) where TAsyncStartupScript : IAsyncStartupScript
+        {
+            string env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Development";
+            configuration ??= new ConfigurationBuilder()
+                .SetBasePath(AppContext.BaseDirectory)
+                .AddJsonFile("appsettings.json", optional: false)
+                .AddJsonFile($"appsettings.{env}.json", optional: true)
+                .AddEnvironmentVariables()
+                .Build();
+            await TAsyncStartupScript.ConfigureServicesAsync(services, configuration).ConfigureAwait(false);
+            return services;
+        }
     }
 }

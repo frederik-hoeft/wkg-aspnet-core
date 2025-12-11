@@ -21,7 +21,7 @@ public abstract class WkgControllerBase : ControllerBase, IMvcContext
     /// Initializes a new instance of the <see cref="WkgControllerBase"/> class.
     /// </summary>
     /// <param name="errorSentry">The error sentry.</param>
-    protected WkgControllerBase(IErrorSentry errorSentry)
+    protected WkgControllerBase([NotNull] IErrorSentry errorSentry)
     {
         ArgumentNullException.ThrowIfNull(errorSentry);
         ErrorSentry = errorSentry;

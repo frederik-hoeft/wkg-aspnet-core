@@ -5,6 +5,7 @@ namespace Wkg.AspNetCore.TestAdapters.Initialization;
 /// <summary>
 /// Represents setup code that is executed before the first test of the first test class is run.
 /// </summary>
+[Obsolete("Use IAsyncTestDatabaseLoader instead. This interface will be removed in a future release.")]
 public interface ITestDatabaseLoader
 {
     internal static abstract void InitializeDatabase(IServiceProvider serviceProvider);
@@ -12,6 +13,7 @@ public interface ITestDatabaseLoader
 
 /// <inheritdoc />
 /// <typeparam name="TDbContext">The type of the database context.</typeparam>
+[Obsolete("Use IAsyncTestDatabaseLoader<T> instead. This interface will be removed in a future release.")]
 public interface ITestDatabaseLoader<in TDbContext> : ITestDatabaseLoader
     where TDbContext : DbContext
 {

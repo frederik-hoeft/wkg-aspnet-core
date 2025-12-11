@@ -5,6 +5,7 @@ namespace Wkg.AspNetCore.TestAdapters.Initialization;
 /// <summary>
 /// Represents dependency injection setup code that is executed before the first test of the first test class requiring DI is executed.
 /// </summary>
+[Obsolete("Use IAsyncDITestInitializer instead. This interface will be removed in a future release.")]
 public interface IDITestInitializer
 {
     /// <summary>
