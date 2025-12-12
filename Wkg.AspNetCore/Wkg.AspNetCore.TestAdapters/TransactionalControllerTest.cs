@@ -53,12 +53,12 @@ public abstract class TransactionalControllerTest<TController, TDbContext, TInit
     /// <param name="unitTestTask">The unit test delegate to execute. The delegate receives the controller instance, the scoped service provider, the transactional database context, and a cancellation token.</param>
     /// <param name="cancellationToken">The cancellation token to observe.</param>
     /// <returns>A task that represents the asynchronous test execution.</returns>
-    protected Task UsingComponentAsync<TRequest>(TRequest request, Func<TController, IServiceProvider, TDbContext, CancellationToken, Task> unitTestTask, CancellationToken cancellationToken = default) =>
+    protected Task UsingComponentAsync<TRequest>(TRequest request, Func<TController, TRequest, IServiceProvider, TDbContext, CancellationToken, Task> unitTestTask, CancellationToken cancellationToken = default) =>
         UsingComponentAsync(async (controller, serviceProvider, dbContext, ct) =>
         {
             ArgumentNullException.ThrowIfNull(request);
             controller.TryValidateModel(request);
-            await unitTestTask.Invoke(controller, serviceProvider, dbContext,  ct);
+            await unitTestTask.Invoke(controller, request, serviceProvider, dbContext, ct);
         }, cancellationToken);
 
     /// <summary>
@@ -69,12 +69,12 @@ public abstract class TransactionalControllerTest<TController, TDbContext, TInit
     /// <param name="unitTestTask">The unit test delegate to execute. The delegate receives the controller instance, the scoped service provider, and a cancellation token.</param>
     /// <param name="cancellationToken">The cancellation token to observe.</param>
     /// <returns>A task that represents the asynchronous test execution.</returns>
-    protected Task UsingComponentAsync<TRequest>(TRequest request, Func<TController, IServiceProvider, CancellationToken, Task> unitTestTask, CancellationToken cancellationToken = default) =>
+    protected Task UsingComponentAsync<TRequest>(TRequest request, Func<TController, TRequest, IServiceProvider, CancellationToken, Task> unitTestTask, CancellationToken cancellationToken = default) =>
         UsingComponentAsync(async (controller, serviceProvider, ct) =>
         {
             ArgumentNullException.ThrowIfNull(request);
             controller.TryValidateModel(request);
-            await unitTestTask.Invoke(controller, serviceProvider, ct);
+            await unitTestTask.Invoke(controller, request, serviceProvider, ct);
         }, cancellationToken);
 
     /// <summary>
@@ -85,11 +85,11 @@ public abstract class TransactionalControllerTest<TController, TDbContext, TInit
     /// <param name="unitTestTask">The unit test delegate to execute. The delegate receives the controller instance and a cancellation token.</param>
     /// <param name="cancellationToken">The cancellation token to observe.</param>
     /// <returns>A task that represents the asynchronous test execution.</returns>
-    protected Task UsingComponentAsync<TRequest>(TRequest request, Func<TController, CancellationToken, Task> unitTestTask, CancellationToken cancellationToken = default) =>
+    protected Task UsingComponentAsync<TRequest>(TRequest request, Func<TController, TRequest, CancellationToken, Task> unitTestTask, CancellationToken cancellationToken = default) =>
         UsingComponentAsync(async (controller, ct) =>
         {
             ArgumentNullException.ThrowIfNull(request);
             controller.TryValidateModel(request);
-            await unitTestTask.Invoke(controller, ct);
+            await unitTestTask.Invoke(controller, request, ct);
         }, cancellationToken);
 }
