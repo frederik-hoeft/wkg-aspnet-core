@@ -1,6 +1,6 @@
 ﻿namespace Wkg.AspNetCore.Abstractions.Internals;
 
-internal record ErrorState : IErrorState
+internal sealed record ErrorState : IErrorState
 {
     public required string? Details { get; init; }
 

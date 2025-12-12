@@ -90,14 +90,14 @@ internal partial class Transaction<TDbContext>(TDbContext dbContext, IErrorSentr
         }
     }
 
-    private protected async Task<TResult> RunInScopeAsync<TResult>(DatabaseRequestTask<TDbContext, TResult> task)
+    private protected async Task<TResult> RunInScopeAsync<TResult>(DatabaseRequestTaskWithCancellation<TDbContext, TResult> task, CancellationToken cancellationToken)
     {
         ObjectDisposedException.ThrowIf(_isDisposed, this);
 
         if (_transaction is null)
         {
             Debug.Assert(!_isGuarded);
-            _transaction = await DbContext.Database.BeginTransactionAsync(_isolationLevel);
+            _transaction = await DbContext.Database.BeginTransactionAsync(_isolationLevel, cancellationToken);
         }
         else if (!ReferenceEquals(_transaction, DbContext.Database.CurrentTransaction))
         {
@@ -108,7 +108,7 @@ internal partial class Transaction<TDbContext>(TDbContext dbContext, IErrorSentr
         // (enables recursion and prevents double error handling)
         if (_isGuarded)
         {
-            IDeferredTransactionState<TResult> result = await task.Invoke(DbContext, s_scopedTransactionInstance);
+            IDeferredTransactionState<TResult> result = await task.Invoke(DbContext, s_scopedTransactionInstance, cancellationToken);
             State |= result.NextState;
             return result.Result;
         }
@@ -116,7 +116,7 @@ internal partial class Transaction<TDbContext>(TDbContext dbContext, IErrorSentr
         try
         {
             _isGuarded = true;
-            IDeferredTransactionState<TResult> result = await task.Invoke(DbContext, s_scopedTransactionInstance);
+            IDeferredTransactionState<TResult> result = await task.Invoke(DbContext, s_scopedTransactionInstance, cancellationToken);
             State |= result.NextState;
             return result.Result;
         }

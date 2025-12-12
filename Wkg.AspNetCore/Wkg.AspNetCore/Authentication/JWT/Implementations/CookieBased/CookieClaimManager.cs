@@ -11,7 +11,7 @@ using Wkg.Logging;
 
 namespace Wkg.AspNetCore.Authentication.Jwt.Implementations.CookieBased;
 
-internal class CookieClaimManager<TIdentityClaim, TDecryptionKeys>(IHttpContextAccessor contextAccessor, CookieClaimOptions cookieOptions, SessionKeyStore<TDecryptionKeys> sessions, IJwtSigningFunction signingFunction)
+internal sealed class CookieClaimManager<TIdentityClaim, TDecryptionKeys>(IHttpContextAccessor contextAccessor, CookieClaimOptions cookieOptions, SessionKeyStore<TDecryptionKeys> sessions, IJwtSigningFunction signingFunction)
     : IClaimManager<TIdentityClaim, TDecryptionKeys>
     where TIdentityClaim : IdentityClaim
     where TDecryptionKeys : IDecryptionKeys<TDecryptionKeys>

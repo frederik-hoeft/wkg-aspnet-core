@@ -1,6 +1,6 @@
 ﻿namespace Wkg.AspNetCore.Authentication.Jwt.Internals;
 
-internal class SessionKey<TDecryptionKeys>(TDecryptionKeys decryptionKeys) : ISessionKey<TDecryptionKeys> where TDecryptionKeys : IDecryptionKeys<TDecryptionKeys>
+internal sealed class SessionKey<TDecryptionKeys>(TDecryptionKeys decryptionKeys) : ISessionKey<TDecryptionKeys> where TDecryptionKeys : IDecryptionKeys<TDecryptionKeys>
 {
     private readonly Guid _key = Guid.NewGuid();
     private long _createdAt = DateTime.UtcNow.Ticks;

@@ -2,4 +2,4 @@
 
 namespace Wkg.AspNetCore.Transactions;
 
-internal record TransactionServiceOptions(IsolationLevel TransactionIsolationLevel);
+internal sealed record TransactionServiceOptions(IsolationLevel TransactionIsolationLevel);

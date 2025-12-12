@@ -8,7 +8,7 @@ namespace Wkg.AspNetCore.Authentication.Jwt;
 /// <summary>
 /// Builds the options for cookie claims.
 /// </summary>
-public class CookieClaimOptionsBuilder
+public sealed class CookieClaimOptionsBuilder
 {
     private TimeSpan _expiration = TimeSpan.FromHours(12);
     private bool _allowInsecure;
@@ -32,6 +32,7 @@ public class CookieClaimOptionsBuilder
     public CookieClaimOptionsBuilder UseSigningFunction<TSigningFunction>(Action<TSigningFunction> configureOptions) 
         where TSigningFunction : class, IJwtSigningFunctionBuilder<TSigningFunction>
     {
+        ArgumentNullException.ThrowIfNull(configureOptions);
         TSigningFunction signingFunction = TSigningFunction.Create();
         configureOptions(signingFunction);
         _signingFunction = signingFunction;

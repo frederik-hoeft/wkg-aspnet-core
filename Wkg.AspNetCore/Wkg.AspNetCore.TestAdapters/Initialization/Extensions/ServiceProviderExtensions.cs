@@ -17,12 +17,14 @@ public static class ServiceProviderExtensions
         {
             throw new InvalidOperationException($"Type {type} must have exactly one constructor.");
         }
-        object?[] dependencies = constructorInfo
+        object?[] dependencies = 
+        [
+            .. constructorInfo
             .GetParameters()
             .Select(param => param.IsOptional 
                 ? serviceProvider.GetService(param.ParameterType)
                 : serviceProvider.GetRequiredService(param.ParameterType))
-            .ToArray();
+        ];
         return constructorInfo.Invoke(dependencies).ReinterpretAs<T>();
     }
 
@@ -31,6 +33,17 @@ public static class ServiceProviderExtensions
     /// </summary>
     /// <typeparam name="TTestDatabaseLoader">The type of the database loader to be used to initialize the database with test data.</typeparam>
     /// <param name="serviceProvider">The service provider to be used to resolve the database loader and the database context.</param>
+    [Obsolete("InitializeTestDatabase is deprecated. Use the asynchrounous InitializeTestDatabaseAsync method instead.")]
     public static void InitializeTestDatabase<TTestDatabaseLoader>(this IServiceProvider serviceProvider)
         where TTestDatabaseLoader : class, ITestDatabaseLoader => TTestDatabaseLoader.InitializeDatabase(serviceProvider);
+
+    /// <summary>
+    /// Initializes the database using the specified asynchronous database loader.
+    /// </summary>
+    /// <typeparam name="TAsyncTestDatabaseLoader">The type of the asynchronous database loader to be used to initialize the database with test data.</typeparam>
+    /// <param name="serviceProvider">The service provider to be used to resolve the database loader and the database context.</param>
+    /// <param name="cancellationToken">The cancellation token to observe.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
+    public static ValueTask InitializeTestDatabaseAsync<TAsyncTestDatabaseLoader>(this IServiceProvider serviceProvider, CancellationToken cancellationToken = default)
+        where TAsyncTestDatabaseLoader : class, IAsyncTestDatabaseLoader => TAsyncTestDatabaseLoader.InitializeDatabaseAsync(serviceProvider, cancellationToken);
 }

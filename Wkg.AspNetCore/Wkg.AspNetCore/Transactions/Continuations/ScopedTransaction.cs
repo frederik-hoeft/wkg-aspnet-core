@@ -1,6 +1,6 @@
 ﻿namespace Wkg.AspNetCore.Transactions.Continuations;
 
-internal class ScopedTransaction : IScopedTransaction
+internal sealed class ScopedTransaction : IScopedTransaction
 {
     public IDeferredTransactionState Commit() =>
         new DeferredTransactionState(TransactionState.Commit);

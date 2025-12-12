@@ -27,6 +27,7 @@ public class DefaultErrorSentry : IErrorSentry
     /// <inheritdoc/>
     public virtual TResult Watch<TResult>(RequestAction<TResult> action)
     {
+        ArgumentNullException.ThrowIfNull(action);
         try
         {
             return action.Invoke();
@@ -51,6 +52,7 @@ public class DefaultErrorSentry : IErrorSentry
     /// <inheritdoc/>
     public async Task<TResult> WatchAsync<TResult>(RequestTask<TResult> task)
     {
+        ArgumentNullException.ThrowIfNull(task);
         try
         {
             return await task.Invoke();

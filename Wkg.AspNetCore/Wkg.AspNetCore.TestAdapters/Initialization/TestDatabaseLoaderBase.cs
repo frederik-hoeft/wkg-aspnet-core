@@ -9,6 +9,7 @@ namespace Wkg.AspNetCore.TestAdapters.Initialization;
 /// </summary>
 /// <typeparam name="TSelf">The type of the implementing database loader.</typeparam>
 /// <typeparam name="TDbContext">The type of the database context.</typeparam>
+[Obsolete("Use AsyncTestDatabaseLoader<TSelf, TDbContext> instead. This class will be removed in a future release.")]
 public abstract class TestDatabaseLoaderBase<TSelf, TDbContext> : ITestDatabaseLoader
     where TSelf : TestDatabaseLoaderBase<TSelf, TDbContext>, ITestDatabaseLoader<TDbContext>, new()
     where TDbContext : DbContext
@@ -20,7 +21,7 @@ public abstract class TestDatabaseLoaderBase<TSelf, TDbContext> : ITestDatabaseL
     {
         if (this is not TSelf)
         {
-            throw new InvalidOperationException($"The type {typeof(TSelf).Name} cannot be used as type parameter {nameof(TSelf)} in the generic type {nameof(TestDatabaseLoaderBase<TSelf, TDbContext>)} for derived type {GetType().Name}. " +
+            throw new InvalidOperationException($"The type {typeof(TSelf).Name} cannot be used as type parameter {nameof(TSelf)} in the generic type {nameof(TestDatabaseLoaderBase<,>)} for derived type {GetType().Name}. " +
                 $"There is no type parameter conversion from {GetType().Name} to {typeof(TSelf).Name}.");
         }
     }
@@ -28,7 +29,7 @@ public abstract class TestDatabaseLoaderBase<TSelf, TDbContext> : ITestDatabaseL
     static void ITestDatabaseLoader.InitializeDatabase(IServiceProvider serviceProvider)
     {
         TSelf databaseLoader = new();
-        TDbContext dbContext = serviceProvider.GetRequiredService<TDbContext>();
+        using TDbContext dbContext = serviceProvider.GetRequiredService<TDbContext>();
         using IDbContextTransaction transaction = dbContext.Database.BeginTransaction();
         databaseLoader.InitializeDatabase(dbContext);
         transaction.Commit();

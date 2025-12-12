@@ -9,15 +9,8 @@ namespace Wkg.AspNetCore.Validation;
 /// <remarks>
 /// This attribute uses <see cref="DataValidationService.IsPhoneNumber(string?)"/> to validate against the phone number format.
 /// </remarks>
-public class ValidPhoneNumberAttribute : DataTypeAttribute
+public sealed class ValidPhoneNumberAttribute() : DataTypeAttribute(DataType.PhoneNumber)
 {
-    /// <summary>
-    /// Initializes a new instance of the <see cref="ValidPhoneNumberAttribute"/> class.
-    /// </summary>
-    public ValidPhoneNumberAttribute() : base(DataType.PhoneNumber)
-    {
-    }
-
     /// <summary>
     /// Determines whether the specified value conforms to the phone number format.
     /// </summary>
@@ -30,7 +23,7 @@ public class ValidPhoneNumberAttribute : DataTypeAttribute
             ErrorMessage = "The {0} field is not a valid phone number.";
         }
 
-        if (value == null)
+        if (value is null)
         {
             return true;
         }

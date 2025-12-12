@@ -5,12 +5,12 @@ namespace Wkg.AspNetCore.Abstractions.Managers.Results;
 /// <summary>
 /// Represents the result code of a manager operation.
 /// </summary>
-public enum ManagerResultCode : uint
+public enum ManagerResultCode : int
 {
     /// <summary>
     /// Represents an unknown result code. In most contexts, this value is invalid.
     /// </summary>
-    Unknown = default,
+    Unknown = 0,
 
     /// <summary>
     /// The operation was successful.

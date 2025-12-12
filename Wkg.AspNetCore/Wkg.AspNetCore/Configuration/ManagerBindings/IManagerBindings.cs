@@ -15,7 +15,7 @@ public interface IManagerBindings
     /// <typeparam name="TManager">The type of the manager to activate.</typeparam>
     /// <param name="context">The context associated with the manager.</param>
     /// <returns>An instance of the manager associated with the specified context.</returns>
-    public TManager ActivateManager<TManager>(IMvcContext context) where TManager : ManagerBase;
+    TManager ActivateManager<TManager>(IMvcContext context) where TManager : ManagerBase;
 
     internal IErrorSentry ErrorSentry { get; }
 }

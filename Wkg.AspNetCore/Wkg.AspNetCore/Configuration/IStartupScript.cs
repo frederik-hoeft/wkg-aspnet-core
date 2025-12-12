@@ -8,6 +8,7 @@ namespace Wkg.AspNetCore.Configuration;
 /// <summary>
 /// Represents a startup script that configures a web application. Basically a replacement for the <see cref="IStartup"/> implementation, just static and simpler.
 /// </summary>
+[Obsolete(DeprecationNotice.SYNCHRONOUS_STARTUP_SCRIPT_INTERFACE)]
 public interface IStartupScript
 {
     /// <summary>

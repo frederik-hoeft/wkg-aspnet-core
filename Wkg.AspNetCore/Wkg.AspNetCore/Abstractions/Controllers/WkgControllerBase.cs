@@ -3,18 +3,29 @@ using System.Diagnostics.CodeAnalysis;
 using Wkg.AspNetCore.Abstractions.Internals;
 using Wkg.AspNetCore.Abstractions.Managers.Results;
 using Wkg.AspNetCore.ErrorHandling;
+using Wkg.AspNetCore.Exceptions;
 
 namespace Wkg.AspNetCore.Abstractions.Controllers;
 
 /// <summary>
 /// Provides a base class for API controllers to handle exceptions.
 /// </summary>
-public abstract class WkgControllerBase(IErrorSentry errorSentry) : ControllerBase, IMvcContext
+public abstract class WkgControllerBase : ControllerBase, IMvcContext
 {
     /// <summary>
     /// Gets the <see cref="IErrorSentry"/> associated with this context.
     /// </summary>
-    protected IErrorSentry ErrorSentry { get; } = errorSentry;
+    protected IErrorSentry ErrorSentry { get; }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="WkgControllerBase"/> class.
+    /// </summary>
+    /// <param name="errorSentry">The error sentry.</param>
+    protected WkgControllerBase([NotNull] IErrorSentry errorSentry)
+    {
+        ArgumentNullException.ThrowIfNull(errorSentry);
+        ErrorSentry = errorSentry;
+    }
 
     /// <summary>
     /// Handles the specified failed <see cref="ManagerResult"/> by returning the appropriate error response.
@@ -39,7 +50,7 @@ public abstract class WkgControllerBase(IErrorSentry errorSentry) : ControllerBa
             ManagerResultCode.Forbidden => Forbid(),
             ManagerResultCode.InvalidModelState => BadRequest(ModelState),
             ManagerResultCode.NotFound => NotFound(details),
-            ManagerResultCode.InternalServerError => throw new Exception(result.ErrorMessage), // handled by the error handling middleware
+            ManagerResultCode.InternalServerError => throw new BusinessLogicException(result.ErrorMessage), // handled by the error handling middleware
             ManagerResultCode.Success => throw new InvalidOperationException("This method should only be called when the result is not successful."),
             _ => throw new ArgumentException($"{result.StatusCode} is not a valid result code.", nameof(result)),
         };
@@ -69,7 +80,7 @@ public abstract class WkgControllerBase(IErrorSentry errorSentry) : ControllerBa
             ManagerResultCode.Forbidden => Forbid(),
             ManagerResultCode.InvalidModelState => BadRequest(ModelState),
             ManagerResultCode.NotFound => NotFound(details),
-            ManagerResultCode.InternalServerError => throw new Exception(result.ErrorMessage),
+            ManagerResultCode.InternalServerError => throw new BusinessLogicException(result.ErrorMessage),
             _ => throw new ArgumentException($"{result.StatusCode} is not a valid result code.", nameof(result)),
         };
     }

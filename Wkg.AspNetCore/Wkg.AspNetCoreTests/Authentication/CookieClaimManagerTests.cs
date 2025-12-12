@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Http;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Wkg.AspNetCore.Authentication.Jwt.Claims;
 using Wkg.AspNetCore.Authentication.Jwt;
 using Wkg.AspNetCore.Authentication.Jwt.Implementations.CookieBased;
@@ -10,7 +9,7 @@ using Wkg.AspNetCore.Authentication.Jwt.SigningFunctions.Implementations;
 namespace Wkg.AspNetCoreTests.Authentication;
 
 [TestClass]
-public class CookieClaimManagerTests
+public sealed class CookieClaimManagerTests
 {
     private static CookieClaimManager<TestIdentityClaim, NoDecryptionKeys> CreateClaimManager() => new
     (
@@ -81,7 +80,7 @@ public class CookieClaimManagerTests
         Assert.IsTrue(manager.TryDeserialize(base64, out ClaimRepositoryData<TestIdentityClaim, NoDecryptionKeys>? data, out ClaimRepositoryStatus status));
         Assert.AreEqual(originalData.IdentityClaim.RawValue, data.IdentityClaim.RawValue);
         Assert.AreEqual(originalData.ExpirationDate, data.ExpirationDate);
-        Assert.AreEqual(originalData.Claims.Length, data.Claims.Length);
+        Assert.HasCount(originalData.Claims.Length, data.Claims);
         Assert.IsTrue(data.Claims.All(original => data.Claims.Any(actual => actual.Subject == original.Subject && actual.RawValue == original.RawValue)));
         Assert.AreEqual(ClaimRepositoryStatus.Valid, status);
     }
@@ -98,9 +97,9 @@ public class CookieClaimManagerTests
         Assert.IsTrue(manager.TryDeserialize(base64, out ClaimRepositoryData<TestIdentityClaim, NoDecryptionKeys>? data, out ClaimRepositoryStatus status));
         Assert.AreEqual(originalData.IdentityClaim.RawValue, data.IdentityClaim.RawValue);
         Assert.AreEqual(originalData.ExpirationDate, data.ExpirationDate);
-        Assert.AreEqual(originalData.Claims.Length, data.Claims.Length);
+        Assert.HasCount(originalData.Claims.Length, data.Claims);
         Assert.AreEqual(ClaimRepositoryStatus.Valid, status);
     }
 }
 
-internal class TestIdentityClaim(string rawValue) : IdentityClaim(rawValue);
+internal sealed class TestIdentityClaim(string rawValue) : IdentityClaim(rawValue);

@@ -6,7 +6,7 @@ namespace Wkg.AspNetCore.Authentication.Jwt.SigningFunctions;
 /// <summary>
 /// A builder for creating an HMAC SHA-256 signing function.
 /// </summary>
-public class HmacSha256 : IJwtSigningFunctionBuilder<HmacSha256>
+public sealed class HmacSha256 : IJwtSigningFunctionBuilder<HmacSha256>
 {
     private string? _secret = null;
 

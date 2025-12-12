@@ -1,6 +1,6 @@
 ﻿namespace Wkg.AspNetCore.Abstractions.Internals;
 
-internal class HiddenErrorState : IErrorState
+internal sealed class HiddenErrorState : IErrorState
 {
     private static readonly HiddenErrorState s_instance = new();
 

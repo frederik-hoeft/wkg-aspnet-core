@@ -7,7 +7,7 @@ namespace Wkg.AspNetCore.Authentication.Jwt.Claims;
 /// Represents a verifiable, strongly-typed claim that is used to identify a user.
 /// </summary>
 /// <typeparam name="TIdentityKey">The type of the identity key.</typeparam>
-public class IdentityClaim<TIdentityKey> : IdentityClaim where TIdentityKey : notnull
+public sealed class IdentityClaim<TIdentityKey> : IdentityClaim where TIdentityKey : notnull
 {
     private TIdentityKey? _identityKey;
 

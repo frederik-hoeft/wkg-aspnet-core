@@ -1,13 +1,16 @@
-﻿namespace Wkg.AspNetCore.TestAdapters;
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace Wkg.AspNetCore.TestAdapters;
 
 /// <summary>
 /// Provides a base class for all unit tests.
 /// </summary>
 public abstract class TestBase
 {
+    [SuppressMessage("Design", "CA1065:Do not raise exceptions in unexpected locations", Justification = "Guard clause to prevent undefined behavior due to version mismatches between frameworks.")]
     static TestBase()
     {
-        if (!WkgAspNetCore.VersionInfo.VersionString.Equals(WkgAspNetCoreTestAdapters.VersionInfo.VersionString))
+        if (!WkgAspNetCore.VersionInfo.VersionString.Equals(WkgAspNetCoreTestAdapters.VersionInfo.VersionString, StringComparison.Ordinal))
         {
             throw new InvalidOperationException(
                 """

@@ -11,12 +11,12 @@ public readonly struct ManagerResult
     /// <summary>
     /// Gets the status code of the result.
     /// </summary>
-    public readonly ManagerResultCode StatusCode;
+    public readonly ManagerResultCode StatusCode { get; }
 
     /// <summary>
     /// Gets the error message of the result, if any.
     /// </summary>
-    public readonly string? ErrorMessage;
+    public readonly string? ErrorMessage { get; }
 
     internal ManagerResult(ManagerResultCode statusCode, string? errorMessage)
     {
