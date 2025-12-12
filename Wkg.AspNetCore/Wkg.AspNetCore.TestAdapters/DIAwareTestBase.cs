@@ -12,6 +12,7 @@ public abstract class DIAwareTestBase<TInitializer> : TestBase where TInitialize
 {
     private static readonly AsyncLock s_asyncLock = new();
     private static volatile ServiceProvider? s_serviceProvider;
+    private static readonly AsyncLocal<IServiceProvider?> s_al_currentScopedServiceProvider = new();
 
     private protected static async ValueTask<ServiceProvider> GetServiceProviderAsync(CancellationToken cancellationToken)
     {
@@ -43,9 +44,16 @@ public abstract class DIAwareTestBase<TInitializer> : TestBase where TInitialize
     protected static async Task UsingServiceProviderAsync(Action<IServiceProvider> unitTestAction, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(unitTestAction);
+        if (s_al_currentScopedServiceProvider.Value is not null)
+        {
+            // already in a scope, reuse the current service provider, allows recursive calls
+            unitTestAction.Invoke(s_al_currentScopedServiceProvider.Value);
+            return;
+        }
         ServiceProvider serviceProvider = await GetServiceProviderAsync(cancellationToken).ConfigureAwait(false);
         IServiceScopeFactory scopeFactory = serviceProvider.GetRequiredService<IServiceScopeFactory>();
         await using AsyncServiceScope scope = scopeFactory.CreateAsyncScope();
+        s_al_currentScopedServiceProvider.Value = scope.ServiceProvider;
         unitTestAction.Invoke(scope.ServiceProvider);
     }
 
@@ -54,6 +62,10 @@ public abstract class DIAwareTestBase<TInitializer> : TestBase where TInitialize
     /// </summary>
     /// <param name="unitTestTask">The unit test to be executed asynchronously.</param>
     /// <returns>A task representing the asynchronous operation.</returns>
+    /// <remarks>
+    /// This method does not support cancellation or reentrancy for legacy compatibility.
+    /// Use <see cref="UsingServiceProviderAsync(Func{IServiceProvider, CancellationToken, Task}, CancellationToken)"/> instead.
+    /// </remarks>
     [Obsolete(DeprecationNotice.USE_CANCELLATION_TOKEN_OVERLOAD)]
     protected async Task UsingServiceProviderAsync(Func<IServiceProvider, Task> unitTestTask)
     {
@@ -73,9 +85,16 @@ public abstract class DIAwareTestBase<TInitializer> : TestBase where TInitialize
     protected static async Task UsingServiceProviderAsync(Func<IServiceProvider, CancellationToken, Task> unitTestTask, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(unitTestTask);
+        if (s_al_currentScopedServiceProvider.Value is not null)
+        {
+            // already in a scope, reuse the current service provider, allows recursive calls
+            await unitTestTask.Invoke(s_al_currentScopedServiceProvider.Value, cancellationToken).ConfigureAwait(false);
+            return;
+        }
         ServiceProvider serviceProvider = await GetServiceProviderAsync(cancellationToken).ConfigureAwait(false);
         IServiceScopeFactory scopeFactory = serviceProvider.GetRequiredService<IServiceScopeFactory>();
         await using AsyncServiceScope scope = scopeFactory.CreateAsyncScope();
+        s_al_currentScopedServiceProvider.Value = scope.ServiceProvider;
         await unitTestTask.Invoke(scope.ServiceProvider, cancellationToken);
     }
 }
